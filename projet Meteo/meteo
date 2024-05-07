@@ -1,23 +1,56 @@
-from tkinter import *
-from tkinter import ttk
+import requests
+import json
+from datetime import datetime
+import pytz
+from pytz import timezone
+from PIL import Image
+from IPython.display import display
+from io import BytesIO
+import tkinter
 
-win= Tk()
+
+api_key = "a51763db8b72ce22dd839eb16010cdd9"
+lat = "44.8378"
+lon = "-0.594"
+url = "https://api.openweathermap.org/data/2.5/onecall?lat=%s&lon=%s&appid=%s&units=metric" % (lat, lon, api_key)
+
+#pour afficher données : https://api.openweathermap.org/data/2.5/onecall?lat=44.8378&lon=-0.594&appid=a51763db8b72ce22dd839eb16010cdd9&units=metric
+
+response = requests.get(url)
+data = json.loads(response.text)
+#print(data)
+
+#Compléter pour afficher les prévisions pour les 4 prochains jours
+#for i in range(4):
+   #print(data['daily'][i])"""
+
+meteo = tkinter.Tk()
 def display_text():
-   global entry
-   string= entry.get()
-   print(string)
-   return string
+    global entry
+    ville= entry.get()
+    meteo.destroy()
+    url_ville = "https://api.openweathermap.org/data/2.5/weather?q=%s&appid=%s&units=metric" % (ville, api_key)
+    #pour afficher données : https://api.openweathermap.org/data/2.5/onecall?lat=44.8378&lon=-0.594&appid=a51763db8b72ce22dd839eb16010cdd9&units=metric
 
+    response = requests.get(url_ville)
+    data_lat_long = json.loads(response.text)
+    lon_entry = data_lat_long['coord']['lon']
+    lat_entry = data_lat_long['coord']['lat']
+    
+    return lon_entry, lat_entry
 
-
-label=Label(win,text= 'ville')
+label= tkinter.Label(meteo, text= 'ville')
 label.pack()
-
-entry= Entry(win)
+entry= tkinter.Entry(meteo)
 entry.focus_set()
 entry.pack()
+tkinter.Button(meteo, text= "Okay",width= 20, command= display_text).pack(pady=20)
+meteo.mainloop()
+print(lon_entry,lat_entry)
 
-ttk.Button(win, text= "Okay",width= 20, command= display_text).pack(pady=20)
 
-win.mainloop()
-print('hello world')
+
+
+"""https://api.openweathermap.org/data/2.5/onecall?lat=44.8404&lon=-0.5805&appid=a51763db8b72ce22dd839eb16010cdd9&units=metric"""
+
+
